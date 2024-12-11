@@ -23,6 +23,7 @@ func main() {
 	obj.Remove(-500000)
 	fmt.Printf("\nInsert with ok? %v", param_1)
 	obj.PrintVals([]int{1, 3, 500000, -500000, int(arrays.MaxInt32), int(arrays.MinInt32)})
+	fmt.Printf("\n=>Random val from set: %d", obj.GetRandom())
 	// param_3 := obj.Insert(3)
 	// fmt.Println(param_3)
 	// param_2 := obj.Remove(2)

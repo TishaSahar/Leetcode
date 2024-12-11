@@ -2,7 +2,6 @@ package arrays
 
 import (
 	"fmt"
-	"time"
 
 	"golang.org/x/exp/rand"
 )
@@ -49,7 +48,12 @@ func (rs *RandomizedSet) Remove(val int) bool {
 		for i, v := range bucket {
 			if v == val {
 				bucket[i] = bucket[len(bucket)-1]
-				rs.elements[rs.Hash(val)] = bucket[:len(bucket)-1]
+				bucket = bucket[:len(bucket)-1]
+				if len(bucket) == 0 {
+					delete(rs.elements, rs.Hash(val))
+				} else {
+					rs.elements[rs.Hash(val)] = bucket
+				}
 				return true
 			}
 		}
@@ -59,11 +63,15 @@ func (rs *RandomizedSet) Remove(val int) bool {
 }
 
 func (rs *RandomizedSet) GetRandom() int {
-	rand.Seed(uint64(time.Now().UnixNano()))
-	maxIndex := len(rs.elements)
-	fmt.Println(maxIndex)
-	index := rand.Intn(maxIndex-0) + maxIndex
-	return index
+	randomBucket := rs.pickRandomBucket()
+	randIndex := rand.Intn(len(randomBucket))
+	for i, v := range randomBucket {
+		if i == randIndex {
+			return v
+		}
+	}
+
+	return 505
 }
 
 func (rs *RandomizedSet) Contains(val int) bool {
@@ -90,6 +98,17 @@ func (rs *RandomizedSet) isBucketContainsValue(bucket []int, val int) bool {
 
 func (rs *RandomizedSet) Hash(val int) int {
 	return val / BucketStep
+}
+
+func (rs *RandomizedSet) pickRandomBucket() []int {
+	randomHashIndex := rand.Intn(len(rs.elements))
+	for _, bucket := range rs.elements {
+		if randomHashIndex == 0 {
+			return bucket
+		}
+		randomHashIndex--
+	}
+	return nil
 }
 
 func (rs *RandomizedSet) GetValue(val int) int {
