@@ -3,7 +3,7 @@ package arrays
 import (
 	"fmt"
 
-	"golang.org/x/exp/rand"
+	"math/rand"
 )
 
 const (
